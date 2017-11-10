@@ -31,6 +31,12 @@ class PersonMore
 		count++;
 	}
 	
+	//static block code, before define a object, it runs, it runs only one time for all programe
+	static 
+	{
+		System.out.println("This is static block code");
+	}
+	
 	public PersonMore(String name, int age)
 	{
 		this.name = name;
