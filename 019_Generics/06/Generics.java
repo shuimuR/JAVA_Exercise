@@ -46,6 +46,8 @@ public class Generics
 		Student2 s2 = new Student2();
 		s2.SetAge(18);
 		PrintInfon(s2);
+		//PrintInfo(s2);
+		//err PrintInfo define the super, it just use for String and sub class
 	}
 	
 	public static void PrintInfo(Person<? super String> p)

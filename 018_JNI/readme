@@ -1,0 +1,95 @@
+JAVA 和 C函数之间的调用和参数传递步骤
+1. 在java下使用下列语句块实现库的加载和函数原型的定义
+	static 
+	{
+		/*Load C*/
+		System.loadLibrary("native");		/*libnative.so*/
+	}
+	public native static int[] hello(int[] arr);
+	
+2. 之后即可在java代码中调用
+	public static void main(String args[])
+	{
+		/*call */
+		JNI jniDemo = new JNI();
+		int [] arr = {1,2,3,4};
+		int [] arr2 = null;
+		int i;
+		
+		arr2 = jniDemo.hello(arr);
+		
+		System.out.println("JAVA: The array from C is ");
+		for(i = 0; i < arr2.length; i++)
+			System.out.println(arr2[i]);
+	}
+	
+3. 编译JAVA 类，然后查看生成的JNI 头文件,里面有C文件定义的函数原型
+	javac JNI.java
+	javah -jni JNI
+3. 在C程序中实现接口互通
+	通过以下数组和函数实现对接
+
+	static const JNINativeMethod methods[] = 
+	{
+		{"hello", "([I)[I", (void *)c_hello},
+	};
+
+	JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
+	{
+		JNIEnv *env = NULL;
+		jclass cls;
+	
+		if((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_4))
+		{
+			return JNI_ERR;
+		}
+	
+		cls = (*env)->FindClass(env, "JNI");
+		if(cls == NULL)
+		{
+			return JNI_ERR;
+		}
+	
+		if((*env)->RegisterNatives(env, cls, methods, 1) < 0)
+			return JNI_ERR;
+	
+		return JNI_VERSION_1_4;
+	}
+	
+4. java传入C 数组和C 返回数组的例子
+	jintArray c_hello(JNIEnv *env, jobject cls, jintArray arr)
+	{
+		printf("Hello world!\n");
+		jint *carr;
+		jint i;
+		carr = (*env)->GetIntArrayElements(env, arr, NULL);
+		if(carr == NULL)
+			return 0;
+		
+		jint Len = (*env)->GetArrayLength(env, arr);
+		jint *oarr = (jint *)malloc(Len * sizeof(jint));
+		if(oarr == NULL)
+		{
+			(*env)->ReleaseIntArrayElements(env, arr, carr, 0);
+			return 0;
+		}
+		for(i = 0; i < Len; i++)
+		{
+			oarr[i] = carr[Len - 1 - i];
+		}
+		(*env)->ReleaseIntArrayElements(env, arr, carr, 0);
+	
+		/* create array */
+		jintArray rarr;
+		rarr = (*env)->NewIntArray(env, Len);
+		if(rarr == NULL)
+			return 0;
+		else
+			(*env)->SetIntArrayRegion(env, rarr, 0, Len, oarr);
+	
+		free(oarr);
+		
+		return rarr;
+	}
+
+

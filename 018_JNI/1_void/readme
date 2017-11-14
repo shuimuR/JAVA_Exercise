@@ -1,0 +1,5 @@
+1.编译c文件命令
+	gcc -shared -I /usr/lib/jvm/java-1.8.0-openjdk-amd64/include/ -I /usr/lib/jvm/java-1.8.0-openjdk-amd64/include/linux/ -o libnative.so nativa.c -fPIC
+
+2. 在运行前设置环境变量
+	export LD_LIBRARY_PATH=.

@@ -6,12 +6,11 @@ public class JNI
 		/*Load C*/
 		System.loadLibrary("native");		/*libnative.so*/
 	}
-	public native static void hello();
-	public native int hello(String str, double d, int[] c);
+	public native static int hello(int a);
 	public static void main(String args[])
 	{
-		/* map*/
-		
 		/*call */
+		JNI jniDemo = new JNI();
+		System.out.println("JAVA: the value from C is " + jniDemo.hello(20));
 	}
 }

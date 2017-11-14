@@ -3,7 +3,7 @@
 
 void c_hello(JNIEnv *env, jobject cls)
 {
-	printf("Hello world!");
+	printf("Hello world!\n");
 }
 
 static const JNINativeMethod methods[] = 
@@ -11,11 +11,11 @@ static const JNINativeMethod methods[] =
 	{"hello", "()V", (void *)c_hello},
 };
 
-//JNIEXPORT jint JNICALL
-int JNI_OnLoad(JavaVM &jvm, void *reserved)
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved)
 {
-	JNIEnv *env;
+	JNIEnv *env = NULL;
 	jclass cls;
+	
 	if((*jvm)->GetEnv(jvm, (void **)&env, JNI_VERSION_1_4))
 	{
 		return JNI_ERR;
@@ -30,10 +30,6 @@ int JNI_OnLoad(JavaVM &jvm, void *reserved)
 	if((*env)->RegisterNatives(env, cls, methods, 1) < 0)
 		return JNI_ERR;
 	
-	#if 0
-	MID_C_g = (*env)->GetMethodID(env, cls, "g", "()V");
-	if(MID_C_g == NULL)
-		return JNI_ERR;
-	#endif	
 	return JNI_VERSION_1_4;
 }
+
