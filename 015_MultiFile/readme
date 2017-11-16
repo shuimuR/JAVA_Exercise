@@ -1,0 +1,6 @@
+1. 可以使用package a.b.c.d制定编译后所处的包
+	javac -d . *.java
+	
+2. 在使用时使用import a.b.c.d.ClassName导入具体类
+
+3. 

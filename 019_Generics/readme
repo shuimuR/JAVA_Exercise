@@ -1,0 +1,127 @@
+泛型
+1. 泛型定义类中属性的类型
+	class Person<T, N>
+	{
+		private T age;
+		private N name;
+	
+		public void SetAge(T age)
+		{
+			this.age = age;
+		}
+	
+		public T GetAge()
+		{
+			return age;
+		}
+	}
+	
+	Person<String, String> p = new Person<String, String>();
+	Person<Integer, String> p1 = new Person<Integer, String>();
+	
+2. 泛型的使用
+	Person<String> p = new Person<String>();
+	
+	Person<?> p2;
+	p2 = p;
+	//p2.SetAge("9 years old");
+	p2.GetAge();
+	
+3. 泛型类的继承
+	class Person<T>
+	{
+		private T age;
+	
+		public void SetAge(T age)
+		{
+			this.age = age;
+		}
+	
+		public T GetAge()
+		{
+			return age;
+		}
+	}
+
+	class Student<T> extends Person<T>
+	{
+	
+	}
+
+	class Student2 extends Person<String>
+	{
+	
+	}
+	
+	Person<Integer> p1 = new Person<Integer>();
+	Student<Integer> s = new Student<Integer>();
+	
+	public static void PrintInfo(Person<?> p)
+	{
+		System.out.println(p.GetAge());
+	}
+	
+	public static <T> void PrintInfon(Person<T> p)
+	{
+		System.out.println(p.GetAge());
+	}
+	
+4. 泛型接口
+	interface Person<T>
+	{	
+		public void SetAge(T age);
+	
+		public T GetAge();
+	}
+
+	class Student<T> implements Person<T>
+	{
+		T age;
+		public void SetAge(T age)
+		{
+			this.age = age;
+		}
+	
+		public T GetAge()
+		{
+			return age;
+		}
+	}
+
+	class Student2 implements Person<Integer>
+	{
+		Integer age;
+		public void SetAge(Integer age)
+		{
+			this.age = age;
+		}
+	
+		public Integer GetAge()
+		{
+			return age;
+		}
+	}
+	
+	Student<String> s = new Student<String>();
+	Student2 s2 = new Student2();
+	
+5. 设定泛型上限
+	class Student<T extends Number> implements Person<T>
+	{
+		T age;
+		public void SetAge(T age)
+		{
+			this.age = age;
+		}
+	
+		public T GetAge()
+		{
+			return age;
+		}
+	}
+	
+6. 设定泛型下限，下线只能在对象使用时设定，不能在定义中设定
+	public static void PrintInfo(Person<? super String> p)
+	{
+		System.out.println(p.GetAge());
+	}

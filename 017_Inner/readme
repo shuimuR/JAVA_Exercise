@@ -1,0 +1,40 @@
+1. 里层类可以访问外层类中的priva属性
+
+2. 如果属性不为static，需先实例化类对象之后才能访问
+	但是类的属性为static，可以不实例化对象即可访问
+	
+3. 匿名类
+	interface A
+	{
+		public void PrintInfo();
+	}
+
+	class B implements A
+	{
+		public void PrintInfo()
+		{
+			System.out.println("Hello world!");
+		}
+	}
+
+	public class Annoy
+	{
+		public static void main(String args[])
+		{
+			B b = new B();
+			TestFun(b);
+			//匿名类
+			TestFun(new A()
+			{
+				public void PrintInfo()
+				{
+					System.out.println("Hello Hoo!");
+				}
+			});
+		}
+	
+		public static void TestFun(A a)
+		{
+			a.PrintInfo();
+		}
+	}

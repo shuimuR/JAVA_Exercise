@@ -1,0 +1,13 @@
+抽象类
+abstract class Father
+{
+	public abstract void Study();
+}
+
+class Son extends Father
+{
+	public void Study()
+	{
+		System.out.println("Son study");
+	}
+}

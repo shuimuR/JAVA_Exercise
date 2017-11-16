@@ -100,6 +100,28 @@ int main(int argc, char **argv)
 		printf("can not create object\n");
 		goto destroy;
 	}
+	
+	/********************************************
+	Get or set field
+	********************************************/
+	jfieldID nameID;
+	jfieldID ageID;
+
+	nameID = (*env)->GetFieldID(env, cls, "name", "Ljava/lang/String;");
+	if(nameID == NULL)
+	{
+		ret = -1;
+		printf("can get name ID\n");
+		goto destroy;
+	}
+	
+	ageID = (*env)->GetFieldID(env, cls, "age", "I");
+	if(ageID == NULL)
+	{
+		ret = -1;
+		printf("can get age ID\n");
+		goto destroy;
+	}
 	//4. call method
 	//4.1 get method
 	mid2 = (*env)->GetMethodID(env, cls,"SayHelloTo2", "(Ljava/lang/String;)I");
@@ -112,6 +134,12 @@ int main(int argc, char **argv)
 	//4.2 create para
 	jstr2 = (*env)->NewStringUTF(env, "I am the second function string");
 	
+	jstring jstr_Name;
+	jstr_Name = (*env)->NewStringUTF(env, "Popo");
+	(*env)->SetObjectField(env, jobj2, nameID, jstr_Name);
+	
+	jint SetAgeNum = 16;
+	(*env)->SetIntField(env, jobj2, ageID, SetAgeNum);
 	
 	//4.3 call 
 	r = (*env)->CallIntMethod(env, jobj2, mid2, jstr2);

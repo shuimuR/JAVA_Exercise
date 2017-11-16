@@ -1,0 +1,31 @@
+1. 使用try....catch.....finally处理异常
+
+	try
+	{
+		m = Integer.parseInt(args[0]);
+	    n = Integer.parseInt(args[1]);
+		r = Div(m,n);
+	}
+	catch(ArithmeticException e)
+	{
+		System.out.println("Main: " + e);
+	}
+	catch(ArrayIndexOutOfBoundsException e)
+	{
+		System.out.println("Main: " + e);
+	}
+	catch(RuntimeException e)
+	{
+		System.out.println("Main: " + e);
+	}
+	catch (Exception e)
+	{
+		System.out.println("Main: " + e);
+	}
+	finally
+	{
+		System.out.println("This is Finally");
+	}
+	
+2. 类可以抛出异常，让其他类去处理
+	public static int Div (int m, int n) throws Exception

@@ -1,0 +1,198 @@
+1. C调用JAVA中的static类，不需要实例化类对象
+	a. 创建JAVA虚拟机
+		 JNIEnv* create_vm(JavaVM ** jvm, JNIEnv** env) {   
+			JavaVMInitArgs args;  
+			JavaVMOption options[1];  
+			args.version = JNI_VERSION_1_6;  
+			args.nOptions = 1;  
+			options[0].optionString = "-Djava.class.path=./";  
+			args.options = options;  
+			args.ignoreUnrecognized = JNI_FALSE;  
+			JNI_CreateJavaVM(jvm, (void **)env, &args);   
+		} 
+		
+		JavaVM* jvm;
+	 	JNIEnv* env;
+	 	
+	 	if(create_vm(&jvm, &env) < 0)
+		{
+			printf("can not create jvm\n");
+			return -1;
+		}
+	b. 获取类
+		jclass cls;
+		cls = (*env)->FindClass(env, "Hello");
+		if(cls == NULL)
+		{
+			ret = -1;
+			printf("can not find class\n");
+			goto destory;
+		}
+	c. 获取static方法
+		jmethodID mid;
+		mid = (*env)->GetStaticMethodID(env, cls,"main", "([Ljava/lang/String;)V");
+		if(mid == NULL)
+		{
+			ret = -1;
+			printf("can not get class\n");
+			goto destory;
+		}
+	d. 调用函数
+		(*env)->CallStaticVoidMethod(env, cls, mid, NULL);
+		
+	销毁java虚拟机
+		destory:
+			(*jvm)->DestroyJavaVM(jvm);
+			
+2. 在C中调用非static方法，需实例化类对象
+	a. 创建JAVA虚拟机
+		 JNIEnv* create_vm(JavaVM ** jvm, JNIEnv** env) {   
+			JavaVMInitArgs args;  
+			JavaVMOption options[1];  
+			args.version = JNI_VERSION_1_6;  
+			args.nOptions = 1;  
+			options[0].optionString = "-Djava.class.path=./";  
+			args.options = options;  
+			args.ignoreUnrecognized = JNI_FALSE;  
+			JNI_CreateJavaVM(jvm, (void **)env, &args);   
+		} 
+		
+		JavaVM* jvm;
+	 	JNIEnv* env;
+	 	
+	 	if(create_vm(&jvm, &env) < 0)
+		{
+			printf("can not create jvm\n");
+			return -1;
+		}
+	b. 获取类
+		jclass cls;
+		cls = (*env)->FindClass(env, "Hello");
+		if(cls == NULL)
+		{
+			ret = -1;
+			printf("can not find class\n");
+			goto destory;
+		}
+	c. 实例化类对象
+		jmethodID cid;
+		cid = (*env)->GetMethodID(env, cls, "<init>", "()V");
+		if(cid == NULL)
+		{
+			ret = -1;
+			printf("can not get method ID\n");
+			goto destroy;
+		}
+		jobject jobj;
+		jobj = (*env)->NewObject(env, cls, cid);
+		if(jobj == NULL)
+		{
+			ret = -1;
+			printf("can not create object\n");
+			goto destroy;
+		}
+	d. 获取对象的方法
+		jmethodID mid;
+		mid = (*env)->GetMethodID(env, cls,"SayHelloTo", "(Ljava/lang/String;)I");
+		if(mid == NULL)
+		{
+			ret = -1;
+			printf("can not get class\n");
+			goto destroy;
+		}
+	e. 构造参数，调用函数
+		jstring jstr;
+		jstr = (*env)->NewStringUTF(env, "I am glad to join in");
+	
+		r = (*env)->CallIntMethod(env, jobj, mid, jstr);
+		printf("caller return %d\n", r);
+		
+3. C设置JAVA中的private对象
+	a. 创建JAVA虚拟机
+		 JNIEnv* create_vm(JavaVM ** jvm, JNIEnv** env) {   
+			JavaVMInitArgs args;  
+			JavaVMOption options[1];  
+			args.version = JNI_VERSION_1_6;  
+			args.nOptions = 1;  
+			options[0].optionString = "-Djava.class.path=./";  
+			args.options = options;  
+			args.ignoreUnrecognized = JNI_FALSE;  
+			JNI_CreateJavaVM(jvm, (void **)env, &args);   
+		} 
+		
+		JavaVM* jvm;
+	 	JNIEnv* env;
+	 	
+	 	if(create_vm(&jvm, &env) < 0)
+		{
+			printf("can not create jvm\n");
+			return -1;
+		}
+	b. 获取类
+		jclass cls;
+		cls = (*env)->FindClass(env, "Hello");
+		if(cls == NULL)
+		{
+			ret = -1;
+			printf("can not find class\n");
+			goto destory;
+		}
+	c. 实例化类对象
+		jmethodID cid;
+		cid = (*env)->GetMethodID(env, cls, "<init>", "()V");
+		if(cid == NULL)
+		{
+			ret = -1;
+			printf("can not get method ID\n");
+			goto destroy;
+		}
+		jobject jobj;
+		jobj = (*env)->NewObject(env, cls, cid);
+		if(jobj == NULL)
+		{
+			ret = -1;
+			printf("can not create object\n");
+			goto destroy;
+		}
+	d. 获取对象的方法
+		jmethodID mid;
+		mid = (*env)->GetMethodID(env, cls,"SayHelloTo", "(Ljava/lang/String;)I");
+		if(mid == NULL)
+		{
+			ret = -1;
+			printf("can not get class\n");
+			goto destroy;
+		}
+	e. 获取并设置field
+		jfieldID nameID;
+		jfieldID ageID;
+
+		nameID = (*env)->GetFieldID(env, cls, "name", "Ljava/lang/String;");
+		if(nameID == NULL)
+		{
+			ret = -1;
+			printf("can get name ID\n");
+			goto destroy;
+		}
+	
+		ageID = (*env)->GetFieldID(env, cls, "age", "I");
+		if(ageID == NULL)
+		{
+			ret = -1;
+			printf("can get age ID\n");
+			goto destroy;
+		}
+		
+		jstring jstr_Name;
+		jstr_Name = (*env)->NewStringUTF(env, "Popo");
+		(*env)->SetObjectField(env, jobj2, nameID, jstr_Name);
+	
+		jint SetAgeNum = 16;
+		(*env)->SetIntField(env, jobj2, ageID, SetAgeNum);
+		
+	f. 构造参数，调用函数
+		jstring jstr;
+		jstr = (*env)->NewStringUTF(env, "I am glad to join in");
+	
+		r = (*env)->CallIntMethod(env, jobj, mid, jstr);
+		printf("caller return %d\n", r);

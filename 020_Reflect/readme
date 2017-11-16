@@ -1,0 +1,79 @@
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Field;
+
+1. 获取类名
+	Person p = new Person();
+	Class<?> c1 = null;
+	try
+	{
+		c1 = Class.forName("a.b.c.d.Person");
+	}
+	catch(ClassNotFoundException e)
+	{
+		System.out.println(e);
+	}
+	Class<?> c2 = p.getClass();
+	Class<?> c3 = Person.class;
+	
+	System.out.println(c1.getName());
+	System.out.println(c2.getName());
+	System.out.println(c3.getName());
+	
+2. 数据类型也有类名
+	int arr[] = {1,2,3,4};
+	int arr2[] = {1,2,3,4,5};
+	int arr3[][] = {{1,2,3,4,5}, {2,4}};
+	Class<?> c4 = arr.getClass();
+	Class<?> c5 = arr2.getClass();
+	Class<?> c6 = arr3.getClass();
+	System.out.println(c4.getName());
+	
+	Class<?> c7 = int.class;
+
+3. 获取类然后实例化对象
+	a. get class
+	Class<?> c = null;
+	try
+	{
+		c = Class.forName("a.b.c.d.Person");
+	}
+	catch(ClassNotFoundException e)
+	{
+		System.out.println(e);
+	}
+	
+	b. 实例化对象
+	Object p = null;
+	
+	try
+	{
+		p = c.newInstance();		//call empty constructor
+	}
+	catch(InstantiationException e)
+	{
+		System.out.println(e);
+	}
+	
+	//获取构造方法
+	Constructor<?> con = c.getConstructor(String.class);		//with para
+	Object p2 = con.newInstance("Hello");
+	
+4. 反射设置类属性
+	Method set = c.getMethod("SetName", String.class);
+	set.invoke(p2, "123");
+	set.invoke(p, "abc");
+	
+	Method get = c.getMethod("GetName");
+	System.out.println(get.invoke(p));
+	System.out.println(get.invoke(p2));
+
+5. 反射设置private属性
+	Field name = c.getDeclaredField("name");
+	name.setAccessible(true);
+	name.set(p, "hanmu");
+	name.set(p2, "Over");
+	System.out.println(name.get(p));
+	System.out.println(name.get(p2));
+	
+6. 
